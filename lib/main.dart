@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'it work! v2',
+              'Invalid username or password',
             ),
             Text(
               '$_counter',
