@@ -65,6 +65,10 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Text(
               'UTK',
+              style: TextStyle(
+                color: Color(0xFF1A8745),
+                fontFamily: 'Mitr',
+              ),
             ),
             Text(
               '$_counter',
