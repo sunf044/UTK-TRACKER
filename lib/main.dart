@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'version 1',
+              'version new',
             ),
             Text(
               '$_counter',
