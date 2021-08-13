@@ -1,7 +1,16 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+void checklocationPermission() async {
+  LocationPermission permission;
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -24,15 +33,66 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  static String _status = "";
+  static String _perm = "";
+  var location = "กดเพื่อเช็ค";
+  late bool position;
+  late LocationPermission permission;
+  // ignore: non_constant_identifier_names
+  late Position Curpo;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      if (_counter == 10) {
-        _counter = 100;
+  _MyHomePageState() {
+    check();
+  }
+
+  getlocation() async {
+    check();
+    Curpo = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  }
+
+  void check() async {
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _perm = "ไม่อนุญาต";
+        });
+      } else {
+        setState(() {
+          _perm = "อนุญาต";
+        });
       }
-    });
+    } else {
+      setState(() {
+        _perm = "อนุญาต";
+      });
+    }
+
+    position = await Geolocator.isLocationServiceEnabled();
+    if (position) {
+      setState(() {
+        _status = "เปิดอยู่";
+      });
+    } else {
+      setState(() {
+        _status = "ปิดอยู่";
+      });
+    }
+  }
+
+  Widget buttontest() {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Color(0xFF1A8745)),
+      ),
+      onPressed: getlocation,
+      child: Text(
+        'GET',
+        style: TextStyle(color: Color(0xFFffffff)),
+      ),
+    );
   }
 
   @override
@@ -64,24 +124,19 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'UTK',
+              'GPS $_status',
               style: TextStyle(
                 color: Color(0xFF1A8745),
                 fontFamily: 'Mitr',
               ),
             ),
             Text(
-              '$_counter',
+              '$_perm',
               style: Theme.of(context).textTheme.headline4,
             ),
+            buttontest(),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFF1A8745),
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ),
     );
   }
